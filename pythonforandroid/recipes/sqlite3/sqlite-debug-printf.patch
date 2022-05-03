@@ -1,0 +1,21 @@
+--- sqlite-amalgamation-3350500/sqlite3.c.orig	2021-04-19 12:56:33.000000000 -0600
++++ sqlite-amalgamation-3350500/sqlite3.c	2022-05-03 11:16:49.995696174 -0600
+@@ -29714,6 +29714,7 @@ SQLITE_PRIVATE void sqlite3DebugPrintf(c
+   va_list ap;
+   StrAccum acc;
+   char zBuf[SQLITE_PRINT_BUF_SIZE*10];
++  fprintf(stderr, "sqlite3DebugPrintf\n");
+   sqlite3StrAccumInit(&acc, 0, zBuf, sizeof(zBuf), 0);
+   va_start(ap,zFormat);
+   sqlite3_str_vappendf(&acc, zFormat, ap);
+@@ -29725,8 +29726,8 @@ SQLITE_PRIVATE void sqlite3DebugPrintf(c
+     SQLITE_OS_TRACE_PROC(zBuf, sizeof(zBuf));
+   }
+ #else
+-  fprintf(stdout,"%s", zBuf);
+-  fflush(stdout);
++  fprintf(stderr,"%s", zBuf);
++  fflush(stderr);
+ #endif
+ }
+ #endif

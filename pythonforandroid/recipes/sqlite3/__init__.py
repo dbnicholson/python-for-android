@@ -10,6 +10,10 @@ class Sqlite3Recipe(NDKRecipe):
     url = 'https://www.sqlite.org/2021/sqlite-amalgamation-3350500.zip'
     generated_libraries = ['sqlite3']
 
+    patches = [
+        'sqlite-debug-printf.patch',
+    ]
+
     def should_build(self, arch):
         return not self.has_libs(arch, 'libsqlite3.so')
 
