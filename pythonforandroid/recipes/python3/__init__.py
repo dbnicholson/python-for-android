@@ -63,6 +63,7 @@ class Python3Recipe(TargetPythonRecipe):
     patches = [
         'patches/pyconfig_detection.patch',
         'patches/reproducible-buildinfo.diff',
+        'patches/sqlite-ext-errorcode.patch',
 
         # Python 3.7.1
         ('patches/py3.7.1_fix-ctypes-util-find-library.patch', version_starts_with("3.7")),

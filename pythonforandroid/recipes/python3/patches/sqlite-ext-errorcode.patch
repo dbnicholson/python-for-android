@@ -1,0 +1,27 @@
+From 6f84e6707529411d6f6ff67a0a302589d58a3032 Mon Sep 17 00:00:00 2001
+From: Dan Nicholson <dbn@endlessos.org>
+Date: Tue, 3 May 2022 12:18:42 -0600
+Subject: [PATCH] include sqlite extended error code
+
+---
+ Modules/_sqlite/util.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/Modules/_sqlite/util.c b/Modules/_sqlite/util.c
+index 1dbabcdd94..cce4344fdc 100644
+--- a/Modules/_sqlite/util.c
++++ b/Modules/_sqlite/util.c
+@@ -74,7 +74,9 @@ int _pysqlite_seterror(sqlite3* db, sqlite3_stmt* st)
+         case SQLITE_PROTOCOL:
+         case SQLITE_EMPTY:
+         case SQLITE_SCHEMA:
+-            PyErr_SetString(pysqlite_OperationalError, sqlite3_errmsg(db));
++            PyErr_Format(pysqlite_OperationalError, "%s (%d): %s",
++                         sqlite3_errmsg(db), sqlite3_extended_errcode(db),
++                         strerror(sqlite3_system_errno(db)));
+             break;
+         case SQLITE_CORRUPT:
+             PyErr_SetString(pysqlite_DatabaseError, sqlite3_errmsg(db));
+-- 
+2.30.2
+
