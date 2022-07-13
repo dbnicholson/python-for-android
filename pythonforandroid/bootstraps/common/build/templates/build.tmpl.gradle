@@ -128,7 +128,14 @@ dependencies {
     {% if args.presplash_lottie %}
     implementation 'com.airbnb.android:lottie:3.4.0'
     {%- endif %}
+    {%- if args.fileprovider_paths %}
+    {%- if args.enable_androidx %}
+    implementation 'androidx.core:core:1.8.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    {%- else %}
     implementation 'com.android.support:support-v4:26.1.0'
     implementation 'com.android.support:multidex:1.0.3'
+    {%- endif %}
+    {%- endif %}
 }
 
