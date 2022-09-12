@@ -570,6 +570,16 @@ class ToolchainCL:
 
         add_parser(
             subparsers,
+            'test', help='Run Android unit tests',
+            parents=[parser_packaging])
+
+        add_parser(
+            subparsers,
+            'connectedAndroidTest', help='Run Android instrumented tests',
+            parents=[parser_packaging])
+
+        add_parser(
+            subparsers,
             'create', help='Compile a set of requirements into a dist',
             parents=[generic_parser])
         add_parser(
@@ -1034,7 +1044,8 @@ class ToolchainCL:
         """
         Creates an android package using gradle
         :param args: parser args
-        :param package_type: one of 'apk', 'aar', 'aab'
+        :param package_type: one of 'apk', 'aar', 'aab', 'test',
+          'connectedAndroidTest'
         :return (gradle output, build_args)
         """
         ctx = self.ctx
@@ -1087,12 +1098,21 @@ class ToolchainCL:
                         "aab is meant only for distribution and is not available in debug mode. "
                         "Instead, you can use apk while building for debugging purposes."
                     )
-                gradle_task = "assembleDebug"
+                elif package_type == "test":
+                    gradle_task = "testDebugUnitTest"
+                elif package_type == "connectedAndroidTest":
+                    gradle_task = "connectedDebugAndroidTest"
+                else:
+                    gradle_task = "assembleDebug"
             elif args.build_mode == "release":
                 if package_type in ["apk", "aar"]:
                     gradle_task = "assembleRelease"
                 elif package_type == "aab":
                     gradle_task = "bundleRelease"
+                elif package_type == "test":
+                    gradle_task = "testReleaseUnitTest"
+                elif package_type == "connectedAndroidTest":
+                    gradle_task = "connectedReleaseAndroidTest"
             else:
                 raise BuildInterruptingException(
                     "Unknown build mode {} for apk()".format(args.build_mode))
@@ -1171,6 +1191,14 @@ class ToolchainCL:
         output, build_args = self._build_package(args, package_type='aab')
         output_dir = join(self._dist.dist_dir, "build", "outputs", 'bundle', args.build_mode)
         self._finish_package(args, output, build_args, 'aab', output_dir)
+
+    @require_prebuilt_dist
+    def test(self, args):
+        output, build_args = self._build_package(args, package_type='test')
+
+    @require_prebuilt_dist
+    def connectedAndroidTest(self, args):
+        output, build_args = self._build_package(args, package_type='connectedAndroidTest')
 
     @require_prebuilt_dist
     def create(self, args):

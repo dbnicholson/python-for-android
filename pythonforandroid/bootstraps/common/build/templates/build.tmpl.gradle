@@ -37,6 +37,9 @@ android {
         versionCode {{ args.numeric_version }}
         versionName '{{ args.version }}'
         manifestPlaceholders = {{ args.manifest_placeholders}}
+        {% if args.enable_androidx -%}
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        {%- endif %}
     }
 
 	
@@ -132,5 +135,9 @@ dependencies {
     {%- endif %}
 
     testImplementation 'junit:junit:4.+'
+    {% if args.enable_androidx -%}
+    androidTestImplementation "androidx.test:runner:1.4.0"
+    androidTestImplementation "androidx.test:rules:1.4.0"
+    {%- endif %}
 }
 
